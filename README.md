@@ -4,7 +4,7 @@ Given Ruby's proclivity for heap fragmentation, Web application worker processes
 all available memory unless the server is restarted periodically. When all of the workers restart
 at once, downtime or bad request throughput may result.
 
-Stalin is a gem that gradually kills your workers before they cause swapping, resulting in better
+Stalin is a gem that gracefully kills your workers before they cause swapping, resulting in better
 availability for your application. Its design goals are modularity and compatibility with a range
 of platforms and app servers.
 
@@ -22,8 +22,8 @@ Supported app servers include:
 Servers known NOT to work:
   - Thin (no supervisor process; need an adapter that execs or something)
 
-(As you can see, we are far short of our _goal_ to support many servers! More to come as needed;
-I'm happy to take your contributions.)
+As you can see, we are far short of our _goal_ to support many servers! More to come as needed;
+let me know what you need!
 
 # Installation
 
