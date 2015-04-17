@@ -37,13 +37,17 @@ Just include stalin in your Gemfile.
 Decide on which application server you will use. Add some lines to your `config.ru` to
 install a suitable Stalin middleware.
 
+Because different app servers have different signal-handling and restart semantics, we
+must specialize Stalin's behavior; this is done with a base class (Stalin::Adapter::Rack)
+plus one derived class per supported application server.
+ 
     # Gem that kills app processes when their heap becomes too fragmented.
     require 'stalin'
 
-    # Max memory size (RSS) per worker
     mb = 1024**2
     
-    # Or Stalin::Adapter::Puma
+    # Use the Unicorn adapter to ensure we send Unicorn-friendly kill signals.
+    # Each worker will shutdown at some point between 192MB and 256MB of memory usage.
     use Stalin::Adapter::Unicorn, (192*mb), (256*mb)
 
 If you instantiate Stalin::Adapter::Rack directly, you have two choices:
@@ -55,7 +59,7 @@ explicit about your application server than rely on our heuristic!
 
 # Tuning
 
-TODO
+Consult the documentation for your adapter's `#initialize` to learn how to tune Stalin's behavior.
 
 # Special Thanks
 
