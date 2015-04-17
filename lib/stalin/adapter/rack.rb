@@ -17,13 +17,9 @@ module Stalin::Adapter
     # @raise [ArgumentError] if an incorrect number of arguments is passed
     # @raise [RuntimeError] if 0..5 arguments and the heuristic can't figure out which signals to use
     def self.new(*args)
-      case args.length
-      when 7
-        # Construct an instance of this (or a derived) class with signals explicitly specified.
-        super
-      when 3..6
-        # Warn that this shim will go away in v2
-        warn "Rack.new with fewer than 7 arguments is deprecated; please instantiate a derived class e.g. Unicorn.new or Puma.new"
+      if self == Rack && args.length < 3 
+        # Warn that this shim will go away in v1
+        warn "Stalin::Adapter::Rack.new with fewer than 3 arguments is deprecated; please instantiate a derived class e.g. Unicorn or Puma"
 
         # Use a heuristic to decide on the correct adapter and instantiate a derived class.
         if defined?(::Unicorn)
@@ -38,7 +34,7 @@ module Stalin::Adapter
         middleware.instance_eval { initialize(*args) }
         middleware
       else
-        raise ArgumentError, "Wrong number of arguments (#{args.length} for 3..7)"
+        super 
       end
     end
 
