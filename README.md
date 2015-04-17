@@ -18,6 +18,7 @@ Data sources include:
 Supported app servers include:
   - Rainbows (via Rack middleware + SIGQUIT) 
   - Unicorn (via Rack middleware + SIGQUIT)
+  - Puma (via Rack middleware + SIGTERM/SIGUSR2 depending on execution model)
 
 Servers known NOT to work:
   - Thin (no supervisor process; need an adapter that execs or something)
@@ -33,14 +34,24 @@ Just include stalin in your Gemfile.
 
 # Usage
 
-Add these lines near the top of your `config.ru`
+Decide on which application server you will use. Add some lines to your `config.ru` to
+install a suitable Stalin middleware.
 
-    # Unicorn self-process killer
+    # Gem that kills app processes when their heap becomes too fragmented.
     require 'stalin'
 
     # Max memory size (RSS) per worker
     mb = 1024**2
-    use Stalin::Adapter::Rack, (192*mb), (256*mb)
+    
+    # Or Stalin::Adapter::Puma
+    use Stalin::Adapter::Unicorn, (192*mb), (256*mb)
+
+If you instantiate Stalin::Adapter::Rack directly, you have two choices:
+  - Pass three parameters (app, graceful-shutdown signal and abrupt-shutdown signal) to decide on signalling behavior yourself
+  - Pass one parameter (app) to let Stalin decide which adapter to use based on which server is resident in memory
+  
+Instantiating the Rack middleware with one parameter is deprecated; we'd much rather you be
+explicit about your application server than rely on our heuristic!
 
 # Tuning
 
