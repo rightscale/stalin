@@ -8,6 +8,7 @@ group :development do
   gem 'sinatra', '~> 1.4'
   gem 'unicorn', '~> 4.8'
   gem 'thin',    '~> 1.6'
+  gem 'puma',    '~> 2.11'
 end
 
 group :debugger do

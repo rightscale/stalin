@@ -1,6 +1,6 @@
 require 'sinatra'
 
-# Integration-test driver for Unicorn server. Leaks like a sieve so that Stalin will
+# Integration-test driver for Puma server. Leaks like a sieve so that Stalin will
 # kill workers very quickly.
 
 base = File.expand_path('../..', __FILE__)
@@ -21,6 +21,6 @@ get '/' do
   'Leaked %d bytes; total is now %d bytes' % [delta, leak.length]
 end
 
-use Stalin::Adapter::Unicorn, min, max, 1, true
+use Stalin::Adapter::Puma, min, max, 1, true
 
 run Sinatra::Application
