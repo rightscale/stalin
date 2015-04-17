@@ -5,3 +5,5 @@ module Stalin
 end
 
 require 'stalin/adapter/rack'
+require 'stalin/adapter/unicorn'
+require 'stalin/adapter/puma'
