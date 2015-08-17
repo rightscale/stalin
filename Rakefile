@@ -9,6 +9,7 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Kill Web application workers based on arbitrary conditions.}
   gem.email = "xeger@xeger.net"
   gem.authors = ["Tony Spataro"]
+  gem.required_ruby_version = '~> 2.0'
   gem.files.exclude ".rspec"
   gem.files.exclude "Gemfile*"
   gem.files.exclude "fixtures/**/*"
