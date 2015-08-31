@@ -26,20 +26,22 @@ Servers known NOT to work:
 As you can see, we are far short of our _goal_ to support many servers! More to come as needed;
 let me know what you need!
 
-# Installation
+# User's Guide
+
+## Installation
 
 Just include stalin in your Gemfile.
 
     gem 'stalin'
 
-# Usage
+## Usage
 
 Decide on which application server you will use. Add some lines to your `config.ru` to
 install a suitable Stalin middleware.
 
 Because different app servers have different signal-handling and restart semantics, we
-must specialize Stalin's behavior; this is done with a base class (Stalin::Adapter::Rack)
-plus one derived class per supported application server.
+must specialize Stalin's behavior; this is done with an abstract base class 
+(Stalin::Adapter::Rack) plus one derived class per supported application server.
  
     # Gem that kills app processes when their heap becomes too fragmented.
     require 'stalin'
@@ -50,16 +52,39 @@ plus one derived class per supported application server.
     # Each worker will shutdown at some point between 192MB and 256MB of memory usage.
     use Stalin::Adapter::Unicorn, (192*mb), (256*mb)
 
-If you instantiate Stalin::Adapter::Rack directly, you have two choices:
-  - Pass three parameters (app, graceful-shutdown signal and abrupt-shutdown signal) to decide on signalling behavior yourself
-  - Pass one parameter (app) to let Stalin decide which adapter to use based on which server is resident in memory
-  
-Instantiating the Rack middleware with one parameter is deprecated; we'd much rather you be
-explicit about your application server than rely on our heuristic!
-
-# Tuning
+## Tuning
 
 Consult the documentation for your adapter's `#initialize` to learn how to tune Stalin's behavior.
+
+# Developer's Guide
+
+This gem is a work in progress; the docs are okay, but test coverage is
+nonexistent. Whenever you make changes, please do some smoke tests by yourself.
+
+## Smoke Tests
+
+The `fixtures` subdirectory contains rackup files for both supported application
+servers; you can use these to test the three supported permutations.
+
+When you run puma or rainbows, it will begin listening on a port of its
+choosing; use curl or similar to send it Web requests and cause a large
+memory leak with every request. Each worker process should shutdown after the
+first request, because the leak is large and the hardcoded limit for puma is
+very small.
+
+Verify that stalin is restarting the app servers and that your requests all
+respond with 200 and not 502, 503 or other funny errors.
+
+### Unicorn
+
+    bundle exec unicorn fixtures/unicorn.ru 
+### Single-Process Puma
+
+    bundle exec puma fixtures/puma.ru
+    
+### Multi-Process Puma
+
+    bundle exec puma -w 1 fixtures/puma.ru
 
 # Special Thanks
 
