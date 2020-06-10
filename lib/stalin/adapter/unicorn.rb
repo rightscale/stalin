@@ -9,7 +9,7 @@ module Stalin::Adapter
     # @param [Integer] cycle how frequently to check memory consumption (# requests)
     # @param [Boolean] verbose log extra information
     def initialize(app, min=1024**3, max=2*1024**3, cycle=16, verbose=false)
-      super(app, :QUIT, :TERM, min, max, cycle, verbose)
+      super(app, :TERM, :QUIT, min, max, cycle, verbose)
     end
   end
 end
